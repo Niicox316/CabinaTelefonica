@@ -3,13 +3,17 @@
 //Nicolas Guzman Montaña
 
 import kotlin.system.exitProcess
+import kotlin.random.Random
 
+// Clase de cabina telefónica
 class CabinaTelefonica {
     private var numeroLlamadas: Int = 0
     private var duracionTotal: Int = 0
     private var costoTotal: Int = 0
 
-    fun registrarLlamada(tipoLlamada: Int, duracion: Int) {
+    // Función para registrar una llamada en la cabina
+    fun registrarLlamada(tipoLlamada: Int) {
+        val duracion = Random.nextInt(1, 61) // Genera un número aleatorio entre 1 y 60 minutos
         val costoPorMinuto = when (tipoLlamada) {
             1 -> 50        // Llamada Local
             2 -> 350       // Llamada Larga Distancia
@@ -19,32 +23,41 @@ class CabinaTelefonica {
         numeroLlamadas++
         duracionTotal += duracion
         costoTotal += duracion * costoPorMinuto
+        println("Duración de la llamada: $duracion minutos")
     }
 
+    // Función para mostrar la información detallada de la cabina
     fun mostrarInfo() {
         println("Número de llamadas: $numeroLlamadas")
         println("Duración total de llamadas: $duracionTotal minutos")
         println("Costo total de llamadas: $$costoTotal pesos")
     }
 
+    // Función para reiniciar la cabina, restableciendo todos los valores a cero
     fun reiniciar() {
         numeroLlamadas = 0
         duracionTotal = 0
         costoTotal = 0
     }
 
+    // Función para obtener la duración total de las llamadas
     fun obtenerDuracionTotal() = duracionTotal
+
+    // Función para obtener el costo total de las llamadas
     fun obtenerCostoTotal() = costoTotal
 }
 
+// Clase principal que maneja las operaciones de la aplicación
 class Main {
     private val cabinas = mutableListOf<CabinaTelefonica>()
 
+    // Inicialización de la clase, comenzando con una cabina y llamando al menú
     init {
         cabinas.add(CabinaTelefonica())  // Iniciar con una cabina
         menu()
     }
 
+    // Función para solicitar un número válido al usuario
     private fun solicitarNumero(mensaje: String): Int {
         while (true) {
             print(mensaje)
@@ -58,6 +71,7 @@ class Main {
         }
     }
 
+    // Función que despliega el menú principal y maneja la selección del usuario
     private fun menu() {
         while (true) {
             println("\nSeleccione una opción:")
@@ -84,13 +98,13 @@ class Main {
         }
     }
 
+    // Función para registrar una llamada en una cabina específica
     private fun registrarLlamada() {
         val cabinaNumero = solicitarNumero("Ingrese el número de cabina (1 a ${cabinas.size}): ")
         if (cabinaNumero in 1..cabinas.size) {
             val tipoLlamada = solicitarNumero("Ingrese el tipo de llamada (1: Local, 2: Larga Distancia, 3: Celular): ")
             if (tipoLlamada in 1..3) {
-                val duracion = solicitarNumero("Ingrese la duración de la llamada en minutos: ")
-                cabinas[cabinaNumero - 1].registrarLlamada(tipoLlamada, duracion)
+                cabinas[cabinaNumero - 1].registrarLlamada(tipoLlamada)
                 println("Llamada registrada exitosamente.")
             } else {
                 println("Tipo de llamada no válido.")
@@ -100,6 +114,7 @@ class Main {
         }
     }
 
+    // Función para mostrar la información de una cabina específica
     private fun mostrarInfoCabina() {
         val cabinaNumero = solicitarNumero("Ingrese el número de cabina (1 a ${cabinas.size}): ")
         if (cabinaNumero in 1..cabinas.size) {
@@ -109,6 +124,7 @@ class Main {
         }
     }
 
+    // Función para mostrar un consolidado total de todas las cabinas
     private fun mostrarConsolidadoTotal() {
         var costoTotal = 0
         var duracionTotal = 0
@@ -129,6 +145,7 @@ class Main {
         println("Costo promedio por minuto: $$costoPromedioPorMinuto pesos")
     }
 
+    // Función para reiniciar una cabina específica
     private fun reiniciarCabina() {
         val cabinaNumero = solicitarNumero("Ingrese el número de cabina (1 a ${cabinas.size}): ")
         if (cabinaNumero in 1..cabinas.size) {
@@ -139,6 +156,7 @@ class Main {
         }
     }
 
+    // Función para agregar más cabinas al sistema
     private fun agregarCabinas() {
         val cantidad = solicitarNumero("Ingrese la cantidad de cabinas que desea agregar: ")
         for (i in 1..cantidad) {
